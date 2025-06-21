@@ -96,7 +96,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      // showSemanticsDebugger: false,
+      showSemanticsDebugger: false,
       // debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       themeMode: ThemeMode.dark,

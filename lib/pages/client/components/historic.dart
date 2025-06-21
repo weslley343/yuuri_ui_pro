@@ -136,18 +136,20 @@ class _HistoricState extends State<Historic> {
                       ),
                     ),
               const SizedBox(width: 16),
+              
               ElevatedButton(
-                onPressed: selectedScale == null || loadingHistoric
-                    ? null
-                    : _fetchHistoric,
-                child: loadingHistoric
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.search),
-              ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 12, 12, 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  minimumSize: const Size(0, 56), // Garante altura igual ao dropdown
+                  elevation: 0,
+                ),
+                onPressed: selectedScale == null ? null : _fetchHistoric,
+                child: const Icon(Icons.search),
+              )
             ],
           ),
         ),

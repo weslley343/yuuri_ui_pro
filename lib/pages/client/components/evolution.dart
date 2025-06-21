@@ -106,25 +106,19 @@ class _EvolutionState extends State<Evolution> {
                               horizontal: 12,
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                50,
-                              ),
+                              borderRadius: BorderRadius.circular(50),
                               borderSide: BorderSide(
                                 color: Colors.grey.shade400,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Colors.grey.shade400,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide(
                                 color: Colors.grey.shade600,
                               ),
@@ -152,6 +146,18 @@ class _EvolutionState extends State<Evolution> {
                       ),
                 const SizedBox(width: 16),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 12, 12, 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    minimumSize: const Size(
+                      0,
+                      56,
+                    ), // Garante altura igual ao dropdown
+                    elevation: 0,
+                  ),
                   onPressed: selectedScale == null || loadingEvolution
                       ? null
                       : _fetchEvolution,
@@ -226,10 +232,10 @@ class _EvolutionState extends State<Evolution> {
                                       evolutionData[touchedSpot.barIndex];
                                   final label =
                                       domain['label'] != null &&
-                                              domain['label'].length >
-                                                  touchedSpot.spotIndex
-                                          ? domain['label'][touchedSpot.spotIndex]
-                                          : 'Valor: ${touchedSpot.y}';
+                                          domain['label'].length >
+                                              touchedSpot.spotIndex
+                                      ? domain['label'][touchedSpot.spotIndex]
+                                      : 'Valor: ${touchedSpot.y}';
                                   return LineTooltipItem(
                                     label,
                                     const TextStyle(color: Colors.white),
