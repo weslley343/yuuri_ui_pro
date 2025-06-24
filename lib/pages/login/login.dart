@@ -107,10 +107,13 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: SingleChildScrollView(
-        child: Center(
-          child: _loading
-              ? Center(child: const CircularProgressIndicator())
-              : Padding(
+        child: _loading
+            ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 100.0),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            : Center(
+                child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
@@ -136,7 +139,8 @@ class _LoginState extends State<Login> {
                       TextField(
                         controller: _sugestionServerController,
                         decoration: const InputDecoration(
-                          labelText: "Sugestion Server (ex: http://localhost:4000)",
+                          labelText:
+                              "Sugestion Server (ex: http://localhost:4000)",
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -171,7 +175,7 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }

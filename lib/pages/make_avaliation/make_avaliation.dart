@@ -146,9 +146,7 @@ class _MakeAvaliationState extends State<MakeAvaliation>
       if (context.mounted) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erro ao carregar perguntas: $e'),
-          ),
+          SnackBar(content: Text('Erro ao carregar perguntas: $e')),
         );
       }
     }
@@ -250,39 +248,57 @@ class _MakeAvaliationState extends State<MakeAvaliation>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "${question.itemOrder}. ${question.content}",
-                                    style: const TextStyle(fontSize: 16),
+                                  "${question.itemOrder}. ${question.content}",
+                                  style: const TextStyle(fontSize: 16),
                                   ),
                                   const SizedBox(height: 6),
                                   Text(
-                                    "Domínio: ${question.domain}",
-                                    style: const TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                    ),
+                                  "Domínio: ${question.domain}",
+                                  style: const TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                  ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Wrap(
-                                    spacing: 8,
-                                    children: question.itens.map((item) {
-                                      final selected =
-                                          _selectedAnswers[question.id] == item;
-                                      return Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: ChoiceChip(
-                                              label: Text(item.content),
-                                              selected: selected,
-                                              onSelected: (_) => _selectAnswer(
-                                                index,
-                                                question.id,
-                                                item,
-                                              ), // Passe o index
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }).toList(),
+                                  Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: question.itens.map((item) {
+                                    final selected =
+                                      _selectedAnswers[question.id] == item;
+                                    return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                      color: selected
+                                        ? Colors.blue.shade100
+                                        : const Color.fromARGB(255, 39, 37, 37),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: selected
+                                          ? const Color.fromARGB(255, 73, 173, 255)
+                                          : Colors.grey,
+                                      ),
+                                      ),
+                                      child: InkWell(
+                                      onTap: () => _selectAnswer(
+                                        index,
+                                        question.id,
+                                        item,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: Text(
+                                        item.content,
+                                        style: TextStyle(
+                                          color: selected
+                                            ? Colors.blue.shade900
+                                            : const Color.fromARGB(221, 192, 192, 192),
+                                        ),
+                                        ),
+                                      ),
+                                      ),
+                                    ),
+                                    );
+                                  }).toList(),
                                   ),
                                 ],
                               ),
@@ -351,10 +367,7 @@ class _MakeAvaliationState extends State<MakeAvaliation>
     final url = '$server/avaliation/submit/';
 
     final answers = _selectedAnswers.entries
-        .map((e) => {
-              "question": e.key,
-              "item": e.value.id,
-            })
+        .map((e) => {"question": e.key, "item": e.value.id})
         .toList();
 
     final data = {
@@ -396,16 +409,18 @@ class _MakeAvaliationState extends State<MakeAvaliation>
         if (context.mounted) {
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Erro ao enviar avaliação: ${response.statusCode}')),
+            SnackBar(
+              content: Text('Erro ao enviar avaliação: ${response.statusCode}'),
+            ),
           );
         }
       }
     } catch (e) {
       if (context.mounted) {
         // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao enviar avaliação: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erro ao enviar avaliação: $e')));
       }
     }
   }
