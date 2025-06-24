@@ -133,7 +133,13 @@ class _HomeState extends State<Home> {
       ),
       drawer: DrawerMenu(),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+              child: SizedBox.expand(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+              ),
+            )
           : Column(
               children: [
                 Expanded(

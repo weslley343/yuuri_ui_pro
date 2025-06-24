@@ -71,7 +71,7 @@ class _ListScalesState extends State<ListScales> {
                       height: 120,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Image.asset(
-                        'assets/background.png',
+                        'assets/images/background.png',
                         width: 80,
                         height: 120,
                         fit: BoxFit.cover,
