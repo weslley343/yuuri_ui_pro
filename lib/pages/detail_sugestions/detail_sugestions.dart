@@ -37,21 +37,31 @@ class DetailSugestion extends StatefulWidget {
 
   // Adiciona um print para verificar o conteúdo dos parâmetros
   @override
-
-
   const DetailSugestion({
     super.key,
     required this.clientId,
     required this.avaliationId,
     required this.scaleId,
   });
-
-  @override
   State<DetailSugestion> createState() => _DetailSugestionState();
 }
 
 class _DetailSugestionState extends State<DetailSugestion> {
   late Future<List<Question>> _futureQuestions;
+
+  /// Safely parses a hex color string, returns null if invalid.
+  Color? _parseColor(String? colorString) {
+    if (colorString == null || colorString.isEmpty) return null;
+    try {
+      String hex = colorString.replaceFirst('#', '');
+      if (hex.length == 6) {
+        hex = 'FF$hex'; // add alpha if missing
+      }
+      return Color(int.parse('0x$hex'));
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
   void initState() {
@@ -62,8 +72,8 @@ class _DetailSugestionState extends State<DetailSugestion> {
   /// Faz a requisição GET /recommend e devolve até 5 perguntas.
   Future<List<Question>> _getQuestions() async {
     final prefs = await SharedPreferences.getInstance();
-    final server = prefs.getString('sugestion_server') ?? 'http://127.0.0.1:8000';
-
+    final server =
+        prefs.getString('sugestion_server') ?? 'http://127.0.0.1:8000';
     final dio = Dio(BaseOptions(baseUrl: server));
 
     final response = await dio.get(
@@ -72,18 +82,22 @@ class _DetailSugestionState extends State<DetailSugestion> {
         'client': widget.clientId,
         'avaliation': widget.avaliationId,
         'scale': widget.scaleId,
-        'limit': 5, // se o backend aceitar o parâmetro
+        'limit': 5, // if the backend accepts this parameter
       },
     );
 
     if (response.statusCode == 200) {
-      final List data = response.data['filtered_questions'] as List;
-      // Garante no máximo 5, mesmo que o backend envie mais
+      final filteredQuestions = response.data['filtered_questions'];
+      if (filteredQuestions == null || filteredQuestions is! List) {
+        return [];
+      }
+      final data = filteredQuestions;
+      // Ensure at most 5, even if the backend sends more
       return data.map((e) => Question.fromJson(e)).take(5).toList();
     }
 
     throw Exception(
-      'Erro ao obter recomendações: status ${response.statusMessage}, code ${response.statusCode}',
+      'Failed to get recommendations: status ${response.statusMessage}, code ${response.statusCode}',
     );
   }
 
@@ -108,36 +122,48 @@ class _DetailSugestionState extends State<DetailSugestion> {
             return const Center(child: Text('Nenhuma sugestão encontrada.'));
           }
 
-            return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: questions.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final q = questions[index];
-              return Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                color: q.color != null
-                  ? Color(int.parse(q.color!.replaceFirst('#', '0xff')))
-                  : const Color(0xFFBDBDBD),
-                width: 2,
-                ),
-                borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: q.color != null
-                    ? Color(int.parse(q.color!.replaceFirst('#', '0xff')))
-                    : Theme.of(context).primaryColor,
-                child: Text(q.order.toString()),
-                ),
-                title: Text(q.content),
-                subtitle: Text(q.domain),
+          return Column(
+            children: [
+              const Divider(),
+              Text(
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                'Itens de possível melhoria : ',
               ),
-              );
-            },
-            );
+              
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: questions.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final q = questions[index];
+                    return Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color:
+                              _parseColor(q.color) ?? const Color(0xFFBDBDBD),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor:
+                              _parseColor(q.color) ??
+                              Theme.of(context).primaryColor,
+                          child: Text(q.order.toString()),
+                        ),
+                        title: Text(q.content),
+                        subtitle: Text(q.domain),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const Divider(),
+            ],
+          );
         },
       ),
     );

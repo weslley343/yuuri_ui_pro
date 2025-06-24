@@ -45,6 +45,7 @@ class _EvolutionState extends State<Evolution> {
       url,
       headers: {'User-Agent': 'insomnia/10.2.0'},
     );
+    if (!mounted) return;
     if (response.statusCode == 200) {
       setState(() {
         scales = jsonDecode(response.body);
